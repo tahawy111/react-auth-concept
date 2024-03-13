@@ -4,7 +4,7 @@ const userSchema = new DB(
   {
     username: "String",
     password: "String",
-    rules: "Array",
+    roles: "Array",
     active: "Boolean",
   },
   {

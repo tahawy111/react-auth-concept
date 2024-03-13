@@ -1,6 +1,6 @@
 import { DB } from "github-gist-database";
 
-const userSchema = new DB(
+const noteSchema = new DB(
   {
     userId: "String",
     title: "String",
@@ -17,4 +17,4 @@ const userSchema = new DB(
   }
 );
 
-export default userSchema;
+export default noteSchema;
