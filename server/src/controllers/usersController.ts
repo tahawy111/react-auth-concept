@@ -15,10 +15,10 @@ const usersController = {
     if (!findedUsers) {
       return res.status(400).json({ message: "No users found" });
     }
-    const users = findedUsers.filter(({ username, active, rules, id }) => ({
+    const users = findedUsers.filter(({ username, active, roles, id }) => ({
       username,
       active,
-      rules,
+      roles,
       id,
     }));
     return res.json(users);
