@@ -1,0 +1,23 @@
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "username":"amer",
+    "password":"123456"
+}
+
+###
+
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+    "username":"khaled",
+    "password":"123456",
+    "roles":["Admin"]
+}
+
+###
+
+GET http://localhost:5000/note
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtZXIiLCJwYXNzd29yZCI6IiQyYiQxMCRkci9Wam52VWpicmdyMWg0L1lvVHN1ck5Tc2dxWTFSMGxMZ3BSWkF1WTV5L3F4MXVmaFBtNiIsInJvbGVzIjpbIkFkbWluIl0sImFjdGl2ZSI6dHJ1ZSwiaWQiOiJlZjllZmZmMy03Yzg5LTQ5ZDAtYmQyZi1lNTJmNzI3YjQ1MWIiLCJjcmVhdGVkQXQiOiIyMDI0LTAzLTE3VDIzOjQyOjI0Ljc2MVoiLCJ1cGRhdGVkQXQiOiIyMDI0LTAzLTE3VDIzOjQyOjI0Ljc2M1oiLCJpYXQiOjE3MTA3MTk1MzN9.R_XvZhctHTF4HhV0vZU-MHn0aQ1JpN4SAJ5yu29taUc

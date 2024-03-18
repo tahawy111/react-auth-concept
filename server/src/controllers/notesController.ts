@@ -20,14 +20,8 @@ const notesController = {
     // Add username to each note before sending the response
     // See Promise.all with map() here: https://youtu.be/4lqJBBEpjRE
     // You could also do this with a for...of loop
-    const notesWithUser = await Promise.all(
-      notes.map(async (note) => {
-        const user = await userSchema.findFirst({ id: note.userId });
-        return { ...note, username: user!.username };
-      })
-    );
-
-    res.json(notesWithUser);
+  
+    res.json(notes);
   },
   // @desc Create new note
   // @route POST /notes

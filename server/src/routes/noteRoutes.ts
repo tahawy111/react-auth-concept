@@ -1,13 +1,14 @@
 import { Router } from "express";
 import notesController from "../controllers/notesController";
+import authController from "../controllers/authController";
 
 const router = Router();
 
 router
   .route("/")
-  .get(notesController.getAllNotes)
-  .post(notesController.createNewNote)
-  .patch(notesController.updateNote)
-  .delete(notesController.deleteNote);
+  .get(authController.authenticateToken, notesController.getAllNotes)
+  .post(authController.authenticateToken, notesController.createNewNote)
+  .patch(authController.authenticateToken, notesController.updateNote)
+  .delete(authController.authenticateToken, notesController.deleteNote);
 
 export default router;
