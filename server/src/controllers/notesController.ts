@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import userSchema from "../models/User";
 import noteSchema from "../models/Note";
 import bcrypt from "bcrypt";
+import authController from "./authController";
 
 const notesController = {
   // @desc Get all notes
@@ -20,7 +21,7 @@ const notesController = {
     // Add username to each note before sending the response
     // See Promise.all with map() here: https://youtu.be/4lqJBBEpjRE
     // You could also do this with a for...of loop
-  
+
     res.json(notes);
   },
   // @desc Create new note
@@ -52,9 +53,9 @@ const notesController = {
     if (checkNotesExistance && checkNotesExistance.length > 0) {
       const theLastOneTicket = checkNotesExistance.reduce((prev, curr) =>
         curr.id! > prev.id! ? curr : prev
-      ).ticket
+      ).ticket;
 
-      noteObject.ticket = theLastOneTicket + 1
+      noteObject.ticket = theLastOneTicket + 1;
     }
 
     // Create and store the new user
@@ -143,6 +144,14 @@ const notesController = {
     const reply = `User deleted`;
 
     res.json(reply);
+  },
+  getNote: async (req: Request, res: Response) => {
+    const user = await authController.getUser(req);
+    const note = await noteSchema.findFirst({
+      userId: String(user!.id),
+    });
+
+    res.json({ note });
   },
 };
 
