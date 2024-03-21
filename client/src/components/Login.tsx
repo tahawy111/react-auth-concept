@@ -4,15 +4,8 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-
-export enum TokenExpiration {
-  Access = 5 * 60 * 1000,
-  Refresh = 90 * 24 * 60 * 60 * 1000,
-}
 
 export default function Login() {
-  const cookies = new Cookies(null, { path: "/" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -26,19 +19,17 @@ export default function Login() {
         `${import.meta.env.VITE_API_URL}/auth/login`,
         { username, password }
       );
+      
+      navigate("/")
 
-      cookies.remove("access");
-
-      cookies.set("access", res.data.accessToken, {
-        maxAge: TokenExpiration.Access,
-      });
-      cookies.set("refresh", res.data.refreshToken, {
-        maxAge: TokenExpiration.Refresh,
-      });
+      await axios.get(
+        `${import.meta.env.VITE_API_URL}/auth/setToken?access=${
+          res.data.accessToken
+        }&refresh=${res.data.refreshToken}`,
+        { withCredentials: true }
+      );
 
       //   toast.success(res.data);
-
-      navigate("/");
     } catch (error: any) {
       toast.error(error.response.data.msg);
     }

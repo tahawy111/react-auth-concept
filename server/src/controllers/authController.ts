@@ -44,11 +44,22 @@ const authController = {
       httpOnly: true,
     });
 
-    res.json({
-      msg: "A user logged in successfully!",
-      accessToken,
-      refreshToken,
+    res.json({ accessToken, refreshToken });
+
+    // console.log(req);
+  },
+  setToken: async (req: Request, res: Response) => {
+    res.cookie("access", req.query.access, {
+      maxAge: TokenExpiration.Access,
+      httpOnly: true,
     });
+    res.cookie("refresh", req.query.refresh, {
+      maxAge: TokenExpiration.Refresh,
+      httpOnly: true,
+    });
+
+    res.json({msg:"OK"})
+    // console.log(req);
   },
   // rotate accessToken before it expired
   refreshToken: async (req: Request, res: Response) => {
@@ -87,7 +98,6 @@ const authController = {
   ) => {
     const authToken = req.cookies as IToken;
     console.log(authToken.access);
-    
 
     if (!authToken.access || !authToken.refresh) return res.sendStatus(401);
 
@@ -96,7 +106,7 @@ const authController = {
       process.env.ACCESS_TOKEN_SECRET!,
       async (err, userToken) => {
         console.log(userToken);
-        
+
         if (err) {
           return res.sendStatus(403);
         }
@@ -107,7 +117,10 @@ const authController = {
   getUser: async (req: Request) => {
     const authToken = req.cookies as IToken;
     console.log(authToken.access);
-    const userToken = jwt.verify(authToken.access!, process.env.ACCESS_TOKEN_SECRET!) as {
+    const userToken = jwt.verify(
+      authToken.access!,
+      process.env.ACCESS_TOKEN_SECRET!
+    ) as {
       userId: string;
     };
     console.log(userToken.userId);

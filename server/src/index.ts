@@ -14,13 +14,16 @@ dotenv.config();
 
 console.log(process.env.NODE_ENV);
 
+
+app.use(cookieParser());
+app.use(express.json());
 app.use(
   cors({
     origin: "*",
+    credentials: true,
   })
 );
-app.use(cookieParser());
-app.use(express.json());
+
 
 routes(app);
 
@@ -39,7 +42,7 @@ app.get("/toto", async (req: Request, res: Response) => {
     text: "hello test one",
     completed: false,
     userId: "64372818-1f77-4236-b194-5052c4aea376",
-    ticket: 0
+    ticket: 0,
   });
   res.send(newUser);
 });
