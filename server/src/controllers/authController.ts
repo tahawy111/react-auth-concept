@@ -20,14 +20,14 @@ const authController = {
     const { username, password } = req.body;
     const user = await userSchema.findFirst({ username });
     if (!username || !password) {
-      return res.status(400).send("All fields is missing");
+      return res.status(400).json({ msg: "All fields is missing" });
     }
     if (!user) {
-      return res.status(404).send("Invalid data");
+      return res.status(404).json({ msg: "Invalid data" });
     }
 
     if (!bcrypt.compareSync(password, user.password)) {
-      return res.status(401).send("Invalid password");
+      return res.status(401).json({ msg: "Invalid password" });
     }
 
     const accessToken = generateAccessToken({ userId: user.id });
@@ -35,10 +35,20 @@ const authController = {
 
     console.log({ accessToken, refreshToken });
 
-    res.cookie("access", accessToken, { maxAge: TokenExpiration.Access });
-    res.cookie("refresh", refreshToken, { maxAge: TokenExpiration.Refresh });
+    res.cookie("access", accessToken, {
+      maxAge: TokenExpiration.Access,
+      httpOnly: true,
+    });
+    res.cookie("refresh", refreshToken, {
+      maxAge: TokenExpiration.Refresh,
+      httpOnly: true,
+    });
 
-    res.json({ msg: "A user logged in successfully!" });
+    res.json({
+      msg: "A user logged in successfully!",
+      accessToken,
+      refreshToken,
+    });
   },
   // rotate accessToken before it expired
   refreshToken: async (req: Request, res: Response) => {
@@ -59,9 +69,11 @@ const authController = {
           });
 
           res.cookie("access", accessToken, { maxAge: TokenExpiration.Access });
-          res.cookie("refresh", authToken.refresh, { maxAge: TokenExpiration.Refresh });
+          res.cookie("refresh", authToken.refresh, {
+            maxAge: TokenExpiration.Refresh,
+          });
 
-          res.json({msg:"Token Refreshed Successfully!"})
+          res.json({ msg: "Token Refreshed Successfully!" });
         }
       );
     } catch (error) {
@@ -74,6 +86,8 @@ const authController = {
     next: NextFunction
   ) => {
     const authToken = req.cookies as IToken;
+    console.log(authToken.access);
+    
 
     if (!authToken.access || !authToken.refresh) return res.sendStatus(401);
 
@@ -81,6 +95,8 @@ const authController = {
       authToken.access,
       process.env.ACCESS_TOKEN_SECRET!,
       async (err, userToken) => {
+        console.log(userToken);
+        
         if (err) {
           return res.sendStatus(403);
         }
@@ -89,9 +105,9 @@ const authController = {
     );
   },
   getUser: async (req: Request) => {
-    const authToken = req.headers["authorization"];
-    const token = authToken?.split(" ")[1];
-    const userToken = jwt.verify(token!, process.env.ACCESS_TOKEN_SECRET!) as {
+    const authToken = req.cookies as IToken;
+    console.log(authToken.access);
+    const userToken = jwt.verify(authToken.access!, process.env.ACCESS_TOKEN_SECRET!) as {
       userId: string;
     };
     console.log(userToken.userId);

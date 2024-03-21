@@ -147,11 +147,14 @@ const notesController = {
   },
   getNote: async (req: Request, res: Response) => {
     const user = await authController.getUser(req);
+
     const note = await noteSchema.findFirst({
       userId: String(user!.id),
     });
 
-    res.json({ note });
+    console.log(note);
+
+    res.json({ msg: "note",note});
   },
 };
 

@@ -32,7 +32,7 @@ const usersController = {
     const { username, password, roles } = req.body;
 
     // Confirm data
-    if (!username || !password || !Array.isArray(roles) || !roles.length) {
+    if (!username || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -46,7 +46,12 @@ const usersController = {
     // Hash Password
     const hashedPwd = bcrypt.hashSync(password, 10);
 
-    const userObject = { username, password: hashedPwd, roles, active: true };
+    const userObject = {
+      username,
+      password: hashedPwd,
+      roles: roles || ["Admin"],
+      active: true,
+    };
 
     // Create User and store new user
 
